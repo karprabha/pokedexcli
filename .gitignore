@@ -33,3 +33,6 @@ go.work.sum
 
 # Executable
 pokedexcli
+
+# Repl Log
+repl.log
