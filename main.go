@@ -23,8 +23,22 @@ func main() {
 		scanner.Scan()
 		text := scanner.Text()
 		cleaned := cleanInput(text)
+
+		if len(cleaned) == 0 {
+			continue
+		}
+
 		firstWord := cleaned[0]
 
-		fmt.Println("Your command was:", firstWord)
+		cmd, ok := commands[firstWord]
+		if !ok {
+			fmt.Printf("Unknown command: %s\n", firstWord)
+			continue
+		}
+
+		err := cmd.callback()
+		if err != nil {
+			fmt.Printf("Error executing command: %v\n", err)
+		}
 	}
 }
