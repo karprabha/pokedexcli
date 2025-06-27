@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/karprabha/pokedexcli/internal/commands"
+	"github.com/karprabha/pokedexcli/internal/pokecache"
 )
 
 func cleanInput(text string) []string {
@@ -18,7 +20,10 @@ func cleanInput(text string) []string {
 }
 
 func Start() {
-	cfg := &commands.Config{}
+	cfg := &commands.Config{
+		Cache: pokecache.NewCache(5 * time.Minute),
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")

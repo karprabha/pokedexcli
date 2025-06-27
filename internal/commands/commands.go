@@ -1,8 +1,13 @@
 package commands
 
+import (
+	"github.com/karprabha/pokedexcli/internal/pokecache"
+)
+
 type Config struct {
 	NextLocationURL     *string
 	PreviousLocationURL *string
+	Cache               *pokecache.Cache
 }
 
 type Command struct {

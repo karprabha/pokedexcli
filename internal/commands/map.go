@@ -23,6 +23,12 @@ func commandMap(cfg *Config) error {
 		locationAreasURL = *cfg.NextLocationURL
 	}
 
+	if cachedData, found := cfg.Cache.Get(locationAreasURL); found {
+		fmt.Println("Using cached data...")
+		return processLocationResponse(cachedData, cfg)
+	}
+
+	fmt.Println("Making API request...")
 	resp, err := http.Get(locationAreasURL)
 	if err != nil {
 		return err
@@ -38,19 +44,9 @@ func commandMap(cfg *Config) error {
 		return fmt.Errorf("failed to get location areas: %s", resp.Status)
 	}
 
-	locationAreasResp := LocationAreasResp{}
-	if err = json.Unmarshal(body, &locationAreasResp); err != nil {
-		return err
-	}
+	cfg.Cache.Add(locationAreasURL, body)
 
-	cfg.NextLocationURL = locationAreasResp.Next
-	cfg.PreviousLocationURL = locationAreasResp.Previous
-
-	for _, area := range locationAreasResp.Results {
-		fmt.Println(area.Name)
-	}
-
-	return nil
+	return processLocationResponse(body, cfg)
 }
 
 func commandMapb(cfg *Config) error {
@@ -59,6 +55,12 @@ func commandMapb(cfg *Config) error {
 		return nil
 	}
 
+	if cachedData, found := cfg.Cache.Get(*cfg.PreviousLocationURL); found {
+		fmt.Println("Using cached data...")
+		return processLocationResponse(cachedData, cfg)
+	}
+
+	fmt.Println("Making API request...")
 	resp, err := http.Get(*cfg.PreviousLocationURL)
 	if err != nil {
 		return err
@@ -70,9 +72,18 @@ func commandMapb(cfg *Config) error {
 		return err
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to get location areas: %s", resp.Status)
+	}
+
+	cfg.Cache.Add(*cfg.PreviousLocationURL, body)
+
+	return processLocationResponse(body, cfg)
+}
+
+func processLocationResponse(body []byte, cfg *Config) error {
 	locationAreasResp := LocationAreasResp{}
-	err = json.Unmarshal(body, &locationAreasResp)
-	if err != nil {
+	if err := json.Unmarshal(body, &locationAreasResp); err != nil {
 		return err
 	}
 
