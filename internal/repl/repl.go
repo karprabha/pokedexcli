@@ -37,6 +37,7 @@ func Start() {
 		}
 
 		firstWord := cleaned[0]
+		args := cleaned[1:]
 
 		cmd, ok := commands.GetCommand(firstWord)
 		if !ok {
@@ -44,7 +45,7 @@ func Start() {
 			continue
 		}
 
-		err := cmd.Execute(cfg)
+		err := cmd.Execute(cfg, args)
 		if err != nil {
 			fmt.Printf("Error executing command: %v\n", err)
 		}

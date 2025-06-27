@@ -17,7 +17,7 @@ type LocationAreasResp struct {
 	} `json:"results"`
 }
 
-func commandMap(cfg *Config) error {
+func commandMap(cfg *Config, args []string) error {
 	locationAreasURL := "https://pokeapi.co/api/v2/location-area"
 	if cfg.NextLocationURL != nil {
 		locationAreasURL = *cfg.NextLocationURL
@@ -49,7 +49,7 @@ func commandMap(cfg *Config) error {
 	return processLocationResponse(body, cfg)
 }
 
-func commandMapb(cfg *Config) error {
+func commandMapb(cfg *Config, args []string) error {
 	if cfg.PreviousLocationURL == nil {
 		fmt.Println("you're on the first page")
 		return nil

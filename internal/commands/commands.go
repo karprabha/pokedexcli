@@ -13,11 +13,11 @@ type Config struct {
 type Command struct {
 	Name        string
 	Description string
-	callback    func(*Config) error
+	callback    func(*Config, []string) error
 }
 
-func (c Command) Execute(cfg *Config) error {
-	return c.callback(cfg)
+func (c Command) Execute(cfg *Config, args []string) error {
+	return c.callback(cfg, args)
 }
 
 var commands map[string]Command
@@ -43,6 +43,11 @@ func init() {
 			Name:        "mapb",
 			Description: "Displays the previous 20 location areas",
 			callback:    commandMapb,
+		},
+		"explore": {
+			Name:        "explore",
+			Description: "Explore a location area to see all Pokemon found there.",
+			callback:    commandExplore,
 		},
 	}
 }
