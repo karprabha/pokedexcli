@@ -21,7 +21,8 @@ func cleanInput(text string) []string {
 
 func Start() {
 	cfg := &commands.Config{
-		Cache: pokecache.NewCache(5 * time.Minute),
+		Cache:   pokecache.NewCache(5 * time.Minute),
+		Pokedex: make(map[string]commands.Pokemon),
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
